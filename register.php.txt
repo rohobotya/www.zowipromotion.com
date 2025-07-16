@@ -1,0 +1,25 @@
+<?php
+// Simple registration handler
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $name = $_POST["name"];
+    $phone = $_POST["phone"];
+    $email = $_POST["email"];
+    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+
+    // Save to file (for demo; in production use a database)
+    $user = "$name,$phone,$email,$password\n";
+    file_put_contents("users.csv", $user, FILE_APPEND);
+
+    // Send email to admin for confirmation
+    $to = "yaikobrohobot@gmail.com";
+    $subject = "New Registration - Zowi Branding";
+    $message = "New user registered:\nName: $name\nPhone: $phone\nEmail: $email";
+    $headers = "From: no-reply@zowi-branding.com";
+    mail($to, $subject, $message, $headers);
+
+    echo "<h2>Registration successful!</h2><p>The admin will review your application. <a href='login.html'>Login now</a></p>";
+} else {
+    header("Location: apply.html");
+    exit();
+}
+?>
